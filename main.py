@@ -128,7 +128,7 @@ def main(config, chromedriver):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', '-cfg', type=str, help='config file', default='config.yaml')
+    parser.add_argument('--config', '-cfg', type=str, help='config path', default='config.yaml')
     parser.add_argument('--chromedriver', '-c', type=str, help='chromedriver path', default='chromedriver')
     args = parser.parse_args()
 
