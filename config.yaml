@@ -1,0 +1,25 @@
+# ---------------------------------------
+# Library Room Reservations - Config File
+# ---------------------------------------
+
+# LIBRARY INFO
+# ------------
+
+library:
+  name: Moffitt  # choose from: (Moffitt,)
+  reserve_url: http://berkeley.libcal.com/booking/moffitt-4
+
+# RESERVATION INFO
+# ----------------
+
+booking:
+  start_time: 20  # integer; military time (0 - 23)
+  room: 431  # use the actual number (e.g. Egret on Moffitt 4th floor would be "409")
+  midnight_launch: True
+
+# LOGIN INFO
+# ----------
+
+credentials:
+  calnet_id: <put_something_here>
+  passphrase: x  # this is only local... just don't let anyone see this file
