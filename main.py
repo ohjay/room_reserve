@@ -79,6 +79,9 @@ def reserve_room(library_info, booking_info, login_info, chromedriver):
         # Second page (CalNet login)
         # --------------------------
 
+        # TODO: Do this beforehand, in the setup phase
+        # Just log onto bMail or https://calcentral.berkeley.edu/dashboard
+
         WebDriverWait(driver, 9).until(EC.title_contains('Central Authentication Service'))
         calnet_id_input = driver.find_element_by_id('username')
         calnet_id_input.send_keys(calnet_id)
