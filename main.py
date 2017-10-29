@@ -58,13 +58,11 @@ def reserve_room(library_info, booking_info, login_info, chromedriver):
         # First page (the provided URL)
         # -----------------------------
 
-        src, match, attempts = None, None, 0
-        while match is None and attempts < 5:
-            src = driver.page_source.encode('utf-8').strip()
-            match = re.search(green_button_pattern, src)
-            attempts += 1
-        assert match is not None, 'source string -->\n%s\n\n---\nroom (%d) and/or time (%s) invalid' \
-                                  % (src, room, start_time)
+        WebDriverWait(driver, 9).until(EC.presence_of_element_located((By.ID, 's-lc-rm-tg-cont')))
+        src = driver.page_source.encode('utf-8').strip()
+        match = re.search(green_button_pattern, src)
+        assert match is not None, 'source string -->\n%s\n\n---\nroom (%d) ' \
+                                  'and/or time (%s) invalid' % (src, room, start_time)
         green_button_id = match.group(1)
         green_button = driver.find_element_by_id(green_button_id)
         actions.move_to_element(green_button).perform()  # make sure physical cursor is NOT inside the browser window
