@@ -15,6 +15,7 @@ Usage:
 import os
 import re
 import yaml
+import time
 import argparse
 from datetime import datetime
 from threading import Timer
@@ -45,6 +46,16 @@ def reserve_room(library_info, booking_info, login_info, chromedriver):
 
     # WebDriver setup
     driver = webdriver.Chrome(chromedriver)
+
+    def _do_calnet_login():
+        """Login via the CalNet Authentication Service."""
+        WebDriverWait(driver, 9).until(EC.title_contains('Central Authentication Service'))
+        calnet_id_input = driver.find_element_by_id('username')
+        calnet_id_input.send_keys(calnet_id)
+        passphrase_input = driver.find_element_by_id('password')
+        passphrase_input.send_keys(passphrase)
+        sign_in_button = driver.find_element_by_name('submit')
+        sign_in_button.click()
 
     def _finish_reserve_room():
         """Complete the room reservation.
@@ -77,16 +88,8 @@ def reserve_room(library_info, booking_info, login_info, chromedriver):
         # Second page (CalNet login)
         # --------------------------
 
-        # TODO: Do this beforehand, in the setup phase
-        # Just log onto bMail or https://calcentral.berkeley.edu/dashboard
-
-        WebDriverWait(driver, 9).until(EC.title_contains('Central Authentication Service'))
-        calnet_id_input = driver.find_element_by_id('username')
-        calnet_id_input.send_keys(calnet_id)
-        passphrase_input = driver.find_element_by_id('password')
-        passphrase_input.send_keys(passphrase)
-        sign_in_button = driver.find_element_by_name('submit')
-        sign_in_button.click()
+        if not booking_info.get('midnight_launch', False):
+            _do_calnet_login()
 
         # ------------------------
         # Third page (Springshare)
@@ -103,7 +106,13 @@ def reserve_room(library_info, booking_info, login_info, chromedriver):
         submit_button = WebDriverWait(driver, 9).until(EC.element_to_be_clickable((By.ID, submit_id)))
         submit_button.click()
 
+        time.sleep(9)
+
     if booking_info.get('midnight_launch', False):
+        # Log onto CalNet early
+        driver.get('https://calcentral.berkeley.edu/dashboard')
+        _do_calnet_login()
+
         # Wait until midnight to open the page (assumes that it is not YET midnight!)
         today = datetime.today()
         tomorrow = today.replace(day=today.day + 1, hour=0, minute=0, second=0, microsecond=0)
