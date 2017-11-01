@@ -17,6 +17,7 @@ import re
 import yaml
 import time
 import argparse
+import calendar
 from datetime import datetime
 from threading import Timer
 
@@ -115,7 +116,14 @@ def reserve_room(library_info, booking_info, login_info, chromedriver):
 
         # Wait until midnight to open the page (assumes that it is not YET midnight!)
         today = datetime.today()
-        tomorrow = today.replace(day=today.day + 1, hour=0, minute=0, second=0, microsecond=0)
+        month_end = calendar.monthrange(today.year, today.month)[1]
+        if today.day == month_end:
+            tomorrow_month = today.month + 1 if today.month < 12 else 1
+            tomorrow_day = 1
+        else:
+            tomorrow_month = today.month
+            tomorrow_day = today.day + 1
+        tomorrow = today.replace(month=tomorrow_month, day=tomorrow_day, hour=0, minute=0, second=0, microsecond=0)
         dt_sec = (tomorrow - today).seconds + 0.01
 
         print('Waiting until tomorrow to book the room (room %d at %s in %s)...' % (room, start_time, library))
